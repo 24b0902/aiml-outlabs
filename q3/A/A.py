@@ -28,9 +28,11 @@ def solve_func(X: np.ndarray, y: np.ndarray) -> np.ndarray:
     
         returns the optimal weight vector w_optimal
     """
-
+    pseudo_inv = np.linalg.pinv(X)
+    w_optimal = pseudo_inv @ y
+    return w_optimal
     ## TODO 
-    
+
     raise NotImplementedError("Function 'solve_func' is not implemented yet.")
 
 def exact_solve_function(X: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, float]:
@@ -42,7 +44,11 @@ def exact_solve_function(X: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, floa
         elapsed_time: Time taken in seconds
     """
     ## TODO 
-
+    start=timer()
+    w_optimal =  np.linalg.pinv(X) @ y
+    end=timer()
+    elapsed_time = end- start
+    return w_optimal,elapsed_time
     raise NotImplementedError("Function 'exact_solve_function' is not implemented yet.")
 
 class Trainer:
