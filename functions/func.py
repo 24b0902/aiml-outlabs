@@ -24,15 +24,15 @@ class LSLR (func):
     def eval(self, x: np.ndarray) -> np.ndarray: #type: ignore
         w = x
         residuals = self.X @ w - self.y
-        return 0.5 * np.mean(residuals ** 2)
+        return  np.mean(residuals ** 2)
     
     def grad(self, x: np.ndarray) -> np.ndarray: # type: ignore
         w = x
         residuals = self.X @ w - self.y
-        return (self.X.T @ residuals) / self.n_samples
+        return (2 * (self.X.T @ residuals)) / self.n_samples
     
     def hessian(self, x: np.ndarray) -> np.ndarray:  # type: ignore
-        return (self.X.T @ self.X) / self.n_samples
+        return (2 * (self.X.T @ self.X)) / self.n_samples
 
 
 class rosenbrock(func):
@@ -41,15 +41,20 @@ class rosenbrock(func):
         self.b = b
         super().__init__()
 
-    def eval(self, x: np.ndarray) -> np.ndarray: # type: ignore
-       ## TODO: Implement the Rosenbrock function evaluation
-        return ((self.a-x[0])**2 + (x[1]-(x[0])**2)**2)
-    def grad(self, x: np.ndarray) -> np.ndarray: # type: ignore
-        ## TODO: Implement the Rosenbrock function gradient
-        return np.array([2*((x[0]-self.a)+self.b*((x[0])**2-x[1])*(-2*x[0])), 2*self.b*(x[1]-(x[0])**2)])
-    def hessian(self, x: np.ndarray) -> np.ndarray: # type: ignore
-        ## TODO: Implement the Rosenbrock function Hessian
-        return np.array([[2 + 4*self.b*(x[0]**3-x[0]*x[1]), -4 * self.b*x[0]],[-4*self.b*x[0], 2*self.b]])
+    def eval(self, x: np.ndarray) -> np.ndarray:
+        return (self.a - x[0])**2 + self.b * (x[1] - x[0]**2)**2
+
+    def grad(self, x: np.ndarray) -> np.ndarray:
+        df_dx0 = -2 * (self.a - x[0]) - 4 * self.b * x[0] * (x[1] - x[0]**2)
+        df_dx1 = 2 * self.b * (x[1] - x[0]**2)
+        return np.array([df_dx0, df_dx1])
+
+    def hessian(self, x: np.ndarray) -> np.ndarray:
+        h11 = 2 - 4 * self.b * (x[1] - 3 * x[0]**2)
+        h12 = -4 * self.b * x[0]
+        h22 = 2 * self.b
+        return np.array([[h11, h12], [h12, h22]])
+    
 class rot_anisotropic(func):
     def __init__(self, U: np.ndarray, V: np.ndarray, S: np.ndarray, b: np.ndarray) -> None:
         self.U = U
