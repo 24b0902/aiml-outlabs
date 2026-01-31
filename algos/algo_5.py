@@ -60,8 +60,8 @@ class LSLRAlgo2(LSLROptimiser):
         # raise NotImplementedError("Implement step method for LSLRAlgo1")
     def eval_lslr(self, w: np.ndarray) -> float:
         ## TODO Evaluate LSLR objective: (1/n)||Xw - y||^2
-        residual = self.X @ w - self.y
-        return (residual.T @ residual) / (2*self.n_samples)
+        lslr=(1/(2*self.n_samples))*np.linalg.norm(self.X @w - self.y)**2
+        return lslr
         # raise NotImplementedError("Implement eval_lslr method for LSLRAlgo1")
     def full_grad(self, w: np.ndarray) -> np.ndarray:
         ## TODO 
