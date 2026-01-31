@@ -17,13 +17,11 @@ class LSLRAlgo1(LSLROptimiser):
         
         ## TODO Use this for any pre-computations you need
         self.n_samples, self.n_features = X.shape
-        self.X = self.X / np.linalg.norm(self.X, axis=0)
-
         lipschitz=np.linalg.eigvals((self.X.T @self.X)/self.n_samples)
         self.L=np.max(lipschitz)
         if self.L==0:
             self.L=1e-10
-        
+        self.batch_size=min(32,self.n_samples)
 
 
         ##
@@ -32,7 +30,7 @@ class LSLRAlgo1(LSLROptimiser):
 
     def lr(self) -> float:
         ## TODO learning rate schedule
-        return 1.0 / (self.t + 100)
+        return 1/self.L
     def step(self, params: np.ndarray) -> np.ndarray:
         ## TODO Implement the step method
         gamma = np.random.choice(self.n_samples)

@@ -20,7 +20,7 @@ class LSLRAlgo1(LSLROptimiser):
         self.X=X
         self.y=y
         self.n_samples, self.n_features = X.shape
-        hes=(2/self.n_samples)* ( self.X.T @ self.X )
+        hes=(1/self.n_samples)* ( self.X.T @ self.X )
         self.L=np.linalg.norm(hes,2)
         self.batch_size=min(32,self.n_samples)
 

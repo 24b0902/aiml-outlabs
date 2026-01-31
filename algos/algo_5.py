@@ -20,7 +20,7 @@ class LSLRAlgo2(LSLROptimiser):
         self.y=y
         self.n_samples, self.n_features = X.shape
         self.batch_size=min(32,self.n_samples)
-        H=(2/self.n_samples)* (X.T @ X)
+        H=(1/self.n_samples)* (X.T @ X)
         self.L= np.linalg.norm(H,2)
         self.w_bar = None
         self.full_grad_w_bar = None
