@@ -45,11 +45,11 @@ class LSLRAlgo1(LSLROptimiser):
     def eval_lslr(self, w: np.ndarray) -> float:
         ## TODO Evaluate LSLR objective: (1/n)||Xw - y||^2
         residual = self.X @ w - self.y
-        return (1 / self.n_samples) * (residual @ residual)
+        return (1 / (2*self.n_samples)) * (residual @ residual)
         # raise NotImplementedError("Implement eval_lslr method for LSLRAlgo1")
     def full_grad(self, w: np.ndarray) -> np.ndarray:
         ## TODO 
-        return (2/self.n_samples) * self.X.T @ (self.X @ w - self.y)
+        return (1/self.n_samples) * self.X.T @ (self.X @ w - self.y)
         # raise NotImplementedError("Implement full_grad method for LSLRAlgo1")
     def stoch_grad(self, w: np.ndarray, gamma: int) -> np.ndarray:
        
