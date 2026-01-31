@@ -22,7 +22,7 @@ class LSLRAlgo1(LSLROptimiser):
         self.n_samples, self.n_features = X.shape
         hes=(2/self.n_samples)* ( self.X.T @ self.X )
         self.L=np.linalg.norm(hes,2)
-        self.batch_size=min(32,self.n_samples)
+
 
         ##
 
@@ -34,13 +34,9 @@ class LSLRAlgo1(LSLROptimiser):
         return lr
     def step(self, params: np.ndarray) -> np.ndarray:
         ## TODO Implement the step method
-        B=np.random.choice(self.n_features,self.batch_size,replace=False)
-        grad=np.zeros(self.n_features)
-        for i in B:
-           grad+=self.stoch_grad(params,i)
-        grad=grad/self.batch_size
-        x_new=params - self.lr()*grad
-        return x_new
+        eta=self.lr()
+        gamma = np.random.randint(0, self.n_features)
+        return params- eta*self.stoch_grad(params, gamma)
         # raise NotImplementedError("Implement step method for LSLRAlgo1")
     def eval_lslr(self, w: np.ndarray) -> float:
         ## TODO Evaluate LSLR objective: (1/n)||Xw - y||^2

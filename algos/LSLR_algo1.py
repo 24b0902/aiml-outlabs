@@ -16,45 +16,50 @@ class LSLRAlgo1(LSLROptimiser):
         super().__init__(X, y)
         
         ## TODO Use this for any pre-computations you need
+
+        self.X=X
+        self.y=y
         self.n_samples, self.n_features = X.shape
-        lipschitz=np.linalg.eigvals((self.X.T @self.X)/self.n_samples)
-        self.L=np.max(lipschitz)
-        if self.L==0:
-            self.L=1e-10
+        hes=(2/self.n_samples)* ( self.X.T @ self.X )
+        self.L=np.linalg.norm(hes,2)
         self.batch_size=min(32,self.n_samples)
+
         ##
 
 
 
     def lr(self) -> float:
         ## TODO learning rate schedule
-        return 1/self.L
-    
+        lr=1/self.L
+        return lr
     def step(self, params: np.ndarray) -> np.ndarray:
         ## TODO Implement the step method
-        B=np.random.choice(self.n_samples,self.batch_size,replace=False)
+        B=np.random.choice(self.n_features,self.batch_size,replace=False)
         grad=np.zeros(self.n_features)
         for i in B:
            grad+=self.stoch_grad(params,i)
         grad=grad/self.batch_size
         x_new=params - self.lr()*grad
         return x_new
-        raise NotImplementedError("Implement step method for LSLRAlgo1")
+        # raise NotImplementedError("Implement step method for LSLRAlgo1")
     def eval_lslr(self, w: np.ndarray) -> float:
         ## TODO Evaluate LSLR objective: (1/n)||Xw - y||^2
-        lslr=(1/(2*self.n_samples))*np.linalg.norm(self.X @w - self.y)**2
-        return lslr
-        raise NotImplementedError("Implement eval_lslr method for LSLRAlgo1")
+        residual = self.X @ w - self.y
+        return (1 / self.n_samples) * (residual @ residual)
+        # raise NotImplementedError("Implement eval_lslr method for LSLRAlgo1")
     def full_grad(self, w: np.ndarray) -> np.ndarray:
         ## TODO 
-        grad= (self.X.T @ (self.X @ w - self.y)) / self.n_samples
-        return grad
-        raise NotImplementedError("Implement full_grad method for LSLRAlgo1")
+        return (2/self.n_samples) * self.X.T @ (self.X @ w - self.y)
+        # raise NotImplementedError("Implement full_grad method for LSLRAlgo1")
     def stoch_grad(self, w: np.ndarray, gamma: int) -> np.ndarray:
        
         ## TODO Implement stochastic gradient computation
-        x_i=self.X[gamma,:]
-        y_i=self.y[gamma]
-        return x_i*(x_i@w - y_i)
-        raise NotImplementedError("Implement stoch_grad method for LSLRAlgo1")
+        # e_gamma=np.zeros(w.size[0])
+        d = self.X.shape[1]
+        grad = self.full_grad(w)        
+        G = np.zeros_like(w)
+        G[gamma] = d * grad[gamma]
+        
+        return G
 
+        # raise NotImplementedError("Implement stoch_grad method for LSLRAlgo1")
